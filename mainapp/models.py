@@ -93,6 +93,7 @@ class CartProduct(models.Model):
 		'Cart',
 		verbose_name='Корзина',
 		on_delete=models.CASCADE,
+		related_name='related_products'
 	)
 	product = models.ForeignKey(
 		Product,
@@ -126,7 +127,7 @@ class Cart(models.Model):
 	product = models.ManyToManyField(
 		CartProduct,
 		blank=True,
-		related_name='prodcart'
+		related_name='related_cart'
 	)
 	total_products = models.PositiveIntegerField(default=0)
 	final_price = models.DecimalField(
