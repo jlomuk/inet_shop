@@ -1,9 +1,35 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 User = get_user_model()
+
+
+class LatestProductManager:
+
+	@staticmethod
+	def get_products_for_main_page(*args, **kwargs):
+		with_respect_to = kwargs.get('with_respect_to')
+		products =[]
+		ct_models = ContentType.objects.filter(model__in=args)
+		for ct_model in ct_models:
+			model_products = ct_model.model_class().\
+			_base_manager.all().order_by('-id')[:5]
+			products.extend(model_products)
+		if with_respect_to:
+			ct_model = ContentType.objects.filter(model=with_respect_to)
+			if ct_model.exists():
+				if with_respect_to in args:
+					return sorted(products, key=lambda x: x.__class__._meta.\
+						model_name.startswith(with_respect_to), reverse=True)
+		return products
+
+
+class LatestProducts:
+
+	objects = LatestProductManager()
 
 
 class Category(models.Model):
@@ -11,7 +37,6 @@ class Category(models.Model):
 	class Meta:
 		verbose_name='Категория'
 		verbose_name_plural = 'Категории'
-
 
 	name = models.CharField(
 		max_length=255,
@@ -27,7 +52,7 @@ class Customer(models.Model):
 
     class Meta:
         verbose_name = 'Покупатель'
-        verbose_name_plural =  'Покупатели'
+        verbose_name_plural = 'Покупатели'
 
     user = models.ForeignKey(
     	User,
@@ -50,8 +75,7 @@ class Customer(models.Model):
 class Product(models.Model):
 	
 	class Meta:
-		verbose_name='Продукт'
-		verbose_name_plural = 'Продукты'
+		abstract = True
 
 	category = models.ForeignKey(
 		Category,
@@ -178,10 +202,14 @@ class CartProduct(models.Model):
 		on_delete=models.CASCADE,
 		related_name='related_products'
 	)
-	product = models.ForeignKey(
-		Product,
-		verbose_name='Товар',
-		on_delete=models.CASCADE,
+	content_type = models.ForeignKey(
+		ContentType, 
+		on_delete=models.CASCADE
+	)
+	object_id = models.PositiveIntegerField()
+	content_object = GenericForeignKey(
+		'content_type',
+		'object_id'
 	)
 	qty = models.PositiveIntegerField(
 		default=1,
@@ -223,21 +251,3 @@ class Cart(models.Model):
 	def __str__(self):
 		return f'{self.id}'
 
-
-class Specification(models.Model):
-    class Meta:
-    	verbose_name = 'Спецификация'
-    	verbose_name_plural =  'Спецификации'
-
-    content_type = models.ForeignKey(
-    	ContentType,
-    	on_delete=models.CASCADE,
-    )
-    object_id = models.PositiveIntegerField()
-    name = models.CharField(
-    	max_length=255,
-    	verbose_name='Имя товара для характеристик'
-    )
-
-    def __str__(self):
-    	return f'Характеристики для товара: {self.name}'
