@@ -84,6 +84,10 @@ class Product(models.Model):
 
 class Notebook(Product):
 
+	class Meta:
+		verbose_name='Ноутбук'
+		verbose_name_plural = 'Ноутбуки'
+
 	diagonal = models.CharField(
 		max_length=255, 
 		verbose_name='Диагональ'
@@ -115,6 +119,10 @@ class Notebook(Product):
 
 class Smartphone(Product):
 
+	class Meta:
+		verbose_name='Смартфон'
+		verbose_name_plural = 'Смартфоны'
+
 
 	diagonal = models.CharField(
 	max_length=255, 
@@ -142,7 +150,7 @@ class Smartphone(Product):
 	)
 	sd_volume_max = models.CharField(
 		max_length=255,
-		verbose_name='Максимальный объм встроенной памяти'
+		verbose_name='Максимальный объeм встроенной памяти'
 	)
 	main_cam_mp = models.CharField(
 		max_length=255,
