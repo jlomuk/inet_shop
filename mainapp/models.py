@@ -185,6 +185,7 @@ class CartProduct(models.Model):
 	)
 	qty = models.PositiveIntegerField(
 		default=1,
+		verbose_name='Колличество'
 	)
 	final_price = models.DecimalField(
 		max_digits=9,
