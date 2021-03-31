@@ -1,8 +1,12 @@
 from PIL import Image
+from io import BytesIO
+import sys
+
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 
 class MinResolutionException(Exception):
@@ -126,8 +130,16 @@ class Product(models.Model):
 		if img.width < min_width or img.height < min_height:
 			raise MinResolutionException(f'Загруженное изображения меньше {self.MIN_RESOLUTION[0]} px x {self.MIN_RESOLUTION[1]} px') 
 		if img.width > max_width or img.height > max_height:
-			raise MaxResolutionException(f'Загруженное изображения больше {self.MAX_RESOLUTION[0]} px x {self.MAX_RESOLUTION[1]} px')
-		return image	
+			converted_img = img.convert('RGB')
+			resized_img = converted_img.resize(self.MAX_RESOLUTION, Image.ANTIALIAS)
+			imagestream = BytesIO()
+			resized_img.save(imagestream, 'JPEG', quality=90)
+			self.image = InMemoryUploadedFile(
+					imagestream, 'ImageField',
+					self.image.name, 'jpeg/image',
+					sys.getsizeof(imagestream), None
+				)
+		super().save(*args, **kwargs )	
 
 
 class Notebook(Product):

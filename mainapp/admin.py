@@ -11,7 +11,8 @@ class ImageValidationAdminForm(ModelForm):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.fields['image'].help_text = mark_safe('<span style="color:red; font-size:12px;">\
-			Загружайте изображение в пределах от {}x{} px до {}x{} px и размером не более 2 мб</span>'.format(\
+			Загружайте изображение разрешением не менее чем {}x{} px и размером не более 2 мб,\
+			 изображение свыше {}x{} px будет обрезано </span>'.format(\
 				*models.Product.MIN_RESOLUTION, *models.Product.MAX_RESOLUTION
 			)
 		)
@@ -20,13 +21,10 @@ class ImageValidationAdminForm(ModelForm):
 		image = self.cleaned_data.get('image')
 		img = Image.open(image)
 		min_width, min_height = models.Product.MIN_RESOLUTION
-		max_width, max_height = models.Product.MAX_RESOLUTION
 		if image.size > models.Product.MAX_SIZE_IMAGE:
 			raise ValidationError('Загруженное изображение превышает максимальное значение в 2 мб')
 		if img.width < min_width or img.height < min_height:
 			raise ValidationError(f'Загруженное изображения меньше {models.Product.MIN_RESOLUTION[0]} px x {models.Product.MIN_RESOLUTION[1]} px') 
-		if img.width > max_width or img.height > max_height:
-			raise ValidationError(f'Загруженное изображения больше {models.Product.MAX_RESOLUTION[0]} px x {models.Product.MAX_RESOLUTION[1]} px')
 		return image	
 
 
