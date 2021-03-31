@@ -1,7 +1,16 @@
+from PIL import Image
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+
+
+class MinResolutionException(Exception):
+	pass
+
+
+class MaxResolutionException(Exception):
+	pass
 
 
 User = get_user_model()
@@ -74,6 +83,10 @@ class Customer(models.Model):
 
 class Product(models.Model):
 	
+	MIN_RESOLUTION = (400, 400)
+	MAX_RESOLUTION = (1000, 1000)
+	MAX_SIZE_IMAGE = 2097152
+
 	class Meta:
 		abstract = True
 
@@ -104,6 +117,17 @@ class Product(models.Model):
 
 	def __str__(self):
 		return self.title
+
+	def save(self, *args, **kwargs):
+		image = self.image
+		img = Image.open(image)
+		min_width, min_height = self.MIN_RESOLUTION
+		max_width, max_height = self.MAX_RESOLUTION
+		if img.width < min_width or img.height < min_height:
+			raise MinResolutionException(f'Загруженное изображения меньше {self.MIN_RESOLUTION[0]} px x {self.MIN_RESOLUTION[1]} px') 
+		if img.width > max_width or img.height > max_height:
+			raise MaxResolutionException(f'Загруженное изображения больше {self.MAX_RESOLUTION[0]} px x {self.MAX_RESOLUTION[1]} px')
+		return image	
 
 
 class Notebook(Product):
