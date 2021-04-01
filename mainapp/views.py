@@ -16,7 +16,6 @@ class ProductDetailView(DetailView):
 
 	def dispatch(self, request, *args, **kwargs):
 		self.model = self.CT_MODEL_CLASS.get(kwargs.get('ct_model'))
-		# self.queryset = self.model._base_manager.all()
 		return super().dispatch(request, *args, **kwargs)
 
 	context_object_name = 'product'

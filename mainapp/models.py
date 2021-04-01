@@ -113,7 +113,7 @@ class Product(models.Model):
     image = models.ImageField(
         verbose_name='Изображение',
     )
-    descriplion = models.TextField(
+    description = models.TextField(
         verbose_name='Описание',
         null=True,
     )
