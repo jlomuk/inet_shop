@@ -53,4 +53,5 @@ admin.site.register(models.Notebook, NotebookAdmin)
 admin.site.register(models.Smartphone, SmartphoneAdmin)
 admin.site.register(models.Customer),
 admin.site.register(models.Cart),
+admin.site.register(models.CartProduct),
 
