@@ -217,7 +217,7 @@ class Smartphone(Product):
         max_length=255,
         blank=True,
         null=True,
-        verbose_name='Максимальный объeм встроенной памяти'
+        verbose_name='Максимальный поддерживаемый объeм SD карты'
     )
     main_cam_mp = models.CharField(
         max_length=255,

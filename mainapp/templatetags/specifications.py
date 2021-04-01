@@ -1,5 +1,6 @@
 from django import template
 from django.utils.safestring import mark_safe
+from mainapp.models import Smartphone
 
 
 register = template.Library()
@@ -50,6 +51,9 @@ def product_spec(product):
 	model_name = product.__class__._meta.model_name
 	table_content = ''
 	for key, value in PRODUCT_SPEC[model_name].items():
+		if isinstance(product, Smartphone):
+			if not product.sd and value =='sd_volume_max':
+				continue
 		table_content += TABLE_CONTENT.format(
 			key=key, value=getattr(product, value)
 		)

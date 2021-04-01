@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 from . import models
 
 
-class ImageValidationAdminForm(ModelForm):
+class CustomAdminForm(ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
@@ -16,6 +16,13 @@ class ImageValidationAdminForm(ModelForm):
 				*models.Product.MIN_RESOLUTION, *models.Product.MAX_RESOLUTION
 			)
 		)
+		instance = kwargs.get('instance')
+		if not instance.sd:
+			print(self.fields['sd_volume_max'])
+			self.fields['sd_volume_max'].widget.attrs.update({
+					'readonly': True, 'style': 'background:lightgrey;'
+				})
+
 
 	def clean_image(self):
 		image = self.cleaned_data.get('image')
@@ -28,9 +35,12 @@ class ImageValidationAdminForm(ModelForm):
 		return image	
 
 
+
+
+
 class NotebookAdmin(admin.ModelAdmin):
 	
-	form = ImageValidationAdminForm
+	form = CustomAdminForm
 
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == 'category':
@@ -40,7 +50,8 @@ class NotebookAdmin(admin.ModelAdmin):
 
 class SmartphoneAdmin(admin.ModelAdmin):
 	
-	form = ImageValidationAdminForm
+	change_form_template = 'mainapp/admin.html'
+	form = CustomAdminForm
 
 	def formfield_for_foreignkey(self, db_field, request, **kwargs):
 		if db_field.name == 'category':
