@@ -52,7 +52,7 @@ def product_spec(product):
 	table_content = ''
 	for key, value in PRODUCT_SPEC[model_name].items():
 		if isinstance(product, Smartphone):
-			if not product.sd and value =='sd_volume_max':
+			if not product.sd and value == 'sd_volume_max':
 				continue
 		table_content += TABLE_CONTENT.format(
 			key=key, value=getattr(product, value)
