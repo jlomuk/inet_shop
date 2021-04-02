@@ -17,7 +17,8 @@ class CustomAdminForm(ModelForm):
 			)
 		)
 		instance = kwargs.get('instance')
-		if not instance.sd:
+		model_name = instance.__class__._meta.model_name
+		if model_name == 'smartphone' and not instance.sd:
 			print(self.fields['sd_volume_max'])
 			self.fields['sd_volume_max'].widget.attrs.update({
 					'readonly': True, 'style': 'background:lightgrey;'
@@ -34,7 +35,7 @@ class CustomAdminForm(ModelForm):
 			raise ValidationError(f'Загруженное изображения меньше {models.Product.MIN_RESOLUTION[0]} px x {models.Product.MIN_RESOLUTION[1]} px') 
 		return image	
 
-
+	
 
 
 
