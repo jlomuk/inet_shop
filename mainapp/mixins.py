@@ -27,5 +27,4 @@ class CartMixin(View):
 			if not cart:
 				cart = Cart.objects.create(for_anonymous_user=True)
 		self.cart = cart
-		print(self.cart)
 		return super().dispatch(request, *args, **kwargs)

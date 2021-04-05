@@ -340,12 +340,12 @@ class Cart(models.Model):
     def save(self, *args, **kwargs):
         cart_data = self.products.aggregate(
             models.Sum('final_price'), 
-            models.Count('id')
+            models.Sum('qty')
         )
         if cart_data.get('final_price__sum'):
             self.final_price =  cart_data.get('final_price__sum')
         
         else:
             self.final_price = 0
-        self.total_products  = cart_data.get('id__count')
+        self.total_products  = cart_data.get('qty__sum')
         super().save(*args, **kwargs)
