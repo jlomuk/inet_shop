@@ -108,10 +108,12 @@ class Customer(models.Model):
     phone = models.CharField(
         max_length=20,
         verbose_name='Номер телефона',
+        null=True,
     )
     address = models.CharField(
         max_length=255,
-        verbose_name='Адрес'
+        verbose_name='Адрес',
+        null=True,
     )
 
     def __str__(self):
@@ -173,6 +175,9 @@ class Product(models.Model):
                 sys.getsizeof(imagestream), None
             )
         super().save(*args, **kwargs)
+
+    def get_model_name(self):
+        return self.__class__._meta.model_name
 
 
 class Notebook(Product):
@@ -298,6 +303,11 @@ class CartProduct(models.Model):
         return f'Продукт: {self.content_object.title} (для корзины)'
 
 
+    def save(self, *args, **kwargs):
+        self.final_price = self.qty * self.content_object.price
+        super().save(*args, **kwargs)
+
+
 class Cart(models.Model):
     class Meta:
         verbose_name = 'Корзина'
@@ -305,6 +315,7 @@ class Cart(models.Model):
 
     owner = models.ForeignKey(
         Customer,
+        null=True,
         verbose_name='Владелец',
         on_delete=models.CASCADE
     )
@@ -325,3 +336,16 @@ class Cart(models.Model):
 
     def __str__(self):
         return f'{self.id}'
+
+    def save(self, *args, **kwargs):
+        cart_data = self.products.aggregate(
+            models.Sum('final_price'), 
+            models.Count('id')
+        )
+        if cart_data.get('final_price__sum'):
+            self.final_price =  cart_data.get('final_price__sum')
+        
+        else:
+            self.final_price = 0
+        self.total_products  = cart_data.get('id__count')
+        super().save(*args, **kwargs)
