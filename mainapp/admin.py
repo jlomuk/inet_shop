@@ -19,7 +19,6 @@ class CustomAdminForm(ModelForm):
 		instance = kwargs.get('instance')
 		model_name = instance.__class__._meta.model_name
 		if model_name == 'smartphone' and not instance.sd:
-			print(self.fields['sd_volume_max'])
 			self.fields['sd_volume_max'].widget.attrs.update({
 					'readonly': True, 'style': 'background:lightgrey;'
 				})

@@ -68,7 +68,6 @@ class CategotyManager(models.Manager):
 
     def get_categories_for_left_sidebar(self):
         models = get_models_for_count('notebook', 'smartphone')
-        print(models)
         qs = list(self.get_queryset().annotate(*models))
         data = [
             dict(name=c.name, url=c.get_absolute_url(), count=getattr(c, self.CATEGORY_NAME_COUNT_NAME[c.name]))
