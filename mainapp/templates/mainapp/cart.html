@@ -11,8 +11,8 @@
           </button>
         </div>
       {% endfor %}
-  {% endif %}                                                                                                                                                                                                                                                                                                                                                                                                                                                                          {% if cart.products.all %}
-    
+  {% endif %} 
+  {% if cart.products.all %}
         
 	<table class="table">
   <thead>
@@ -49,8 +49,10 @@
       <td>Итого:</td>
       <td>{{ cart.total_products }}</td>
       <td><b>{{ cart.final_price }} руб.</b></td>
+      <td><a href="{% url 'checkout' %}" class="btn btn-success">Оформление заказа</a></td>
     </tr>
   </tbody>
+  
 </table>
 {% endif %} 
 {% endblock content %}
