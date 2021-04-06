@@ -22,7 +22,7 @@ class HomePageView(CartMixin, View):
         return render(request, 'mainapp/base.html', context)
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(CartMixin,CategoryDetailMixin, DetailView):
 
     CT_MODEL_CLASS = {
         'notebook': Notebook,
@@ -36,19 +36,25 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
      context = super().get_context_data(**kwargs)
      context['ct_model'] = self.model._meta.model_name
+     context['cart'] = self.cart
      return context 
 
     context_object_name = 'product'
     template_name = 'mainapp/product_detail.html'
 
 
-class CategoryDetailView(CategoryDetailMixin, DetailView):
+class CategoryDetailView(CartMixin,CategoryDetailMixin, DetailView):
 
-	models = Category
-	queryset = Category.objects.all()
-	context_object_name = 'category'
-	template_name = 'mainapp/category_detail.html'
-	slug_url_kwarg = 'slug'
+    models = Category
+    queryset = Category.objects.all()
+    context_object_name = 'category'
+    template_name = 'mainapp/category_detail.html'
+    slug_url_kwarg = 'slug'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cart'] = self.cart
+        return context 
 
 
 class AddToCartView(CartMixin, View):

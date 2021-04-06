@@ -11,7 +11,9 @@
           </button>
         </div>
       {% endfor %}
-  {% endif %}
+  {% endif %}                                                                                                                                                                                                                                                                                                                                                                                                                                                                          {% if cart.products.all %}
+    
+        
 	<table class="table">
   <thead>
     <tr>
@@ -50,5 +52,5 @@
     </tr>
   </tbody>
 </table>
-	
+{% endif %} 
 {% endblock content %}

@@ -36,7 +36,7 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'cart' %}">Корзина
-              <span class=" badge badge-pill badge-danger">{{cart.products.count}}</span>
+              <span class=" badge badge-pill badge-danger">{{cart.total_products}}</span>
             </a>
           </li>
         </ul>
@@ -102,6 +102,7 @@
                   <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
                 </h4>
                 <h5>{{ product.price }} руб</h5>
+                <a href="{% url 'add_to_cart' ct_model=product.get_model_name slug=product.slug %}" class="btn btn-danger">В корзину</a>
               </div>
             </div>
           </div>

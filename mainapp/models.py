@@ -324,7 +324,7 @@ class Cart(models.Model):
         blank=True,
         related_name='related_cart'
     )
-    total_products = models.PositiveIntegerField(default=0)
+    total_products = models.PositiveIntegerField(default=0, null=True)
     final_price = models.DecimalField(
         max_digits=9,
         decimal_places=2,
