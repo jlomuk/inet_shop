@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.contenttypes.models import ContentType
 from django.views.generic import DetailView, View
@@ -32,16 +32,24 @@ class ProductDetailView(CartMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
         context['cart'] = self.cart
         return context 
 
 
-class CategoryDetailView(DetailView):
+class CategoryDetailView(CartMixin, DetailView):
 
-    models = Category
+    model = Category
     context_object_name = 'category'
     template_name = 'mainapp/category_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category = kwargs.get('object')
+        context['cart'] = self.cart
+        context['categories'] = Category.objects.all()
+        context['products'] = category.product_set.all()
+        return context 
 
 
 class AddToCartView(CartMixin, View):
@@ -57,7 +65,7 @@ class AddToCartView(CartMixin, View):
         cart_product.save()
         recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, 'Товар добавлен в корзину')
-        return HttpResponseRedirect('/cart/')
+        return HttpResponseRedirect(reverse('home_page'))
 
 
 class DeleteFromCartView(CartMixin, View):
@@ -73,7 +81,7 @@ class DeleteFromCartView(CartMixin, View):
         self.cart.save()
         recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, 'Товар удален из корзины')
-        return HttpResponseRedirect('/cart/')
+        return HttpResponseRedirect(reverse('cart'))
 
 
 

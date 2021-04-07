@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -8,7 +9,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
 
-  <title>Inet Homepage - Start Bootstrap Template</title>
+  <title>Digital Shop Homepage</title>
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
@@ -28,11 +29,16 @@
   <!-- Navigation -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-      <a class="navbar-brand" href="{% url 'home_page' %}">Интернет магазин цифровой техники</a>
+      <a class="navbar-brand" href="{% url 'home_page' %}">Digital Shop</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+             <a class="nav-link" href="{% url 'home_page' %}">Главная</a>
+          </li>
+        </ul>
         <ul class="navbar-nav">
           <li class="nav-item dropdown">
             <a class="nav-link text-light dropdown-toggle" href="#" id="navbarDropdownmenuLink" role="button" data-toggle="dropdown" area-haspopup="true" aria-expanded="false">Категории
@@ -47,7 +53,7 @@
         <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'cart' %}">Корзина
-              <span class=" badge badge-pill badge-danger">{{cart.total_products}}</span>
+              <span class="badge badge-pill badge-danger">{{cart.total_products}}</span>
             </a>
           </li>
         </ul>
@@ -61,11 +67,6 @@
     <div class="row">
 
       <div class="col-lg-3">
-
-        <h1 class="my-4">@InetShop</h1>
-        <div class="list-group">
-
-        </div>
 
       </div>
       <!-- /.col-lg-3 -->
@@ -90,13 +91,13 @@
           </ol>
           <div class="carousel-inner" role="listbox">
             <div class="carousel-item active">
-              <img class="d-block img-fluid" src="http://placehold.it/900x350" alt="First slide">
+              <img class="d-block img-fluid" src="{% static 'hero_L_2432x720 (1).png' %}" alt="First slide">
             </div>
             <div class="carousel-item">
-              <img class="d-block img-fluid" src="http://placehold.it/900x350" alt="Second slide">
+              <img class="d-block img-fluid" src="{% static 'hero_L_2432x720 (2).png' %}" alt="Second slide">
             </div>
             <div class="carousel-item">
-              <img class="d-block img-fluid" src="http://placehold.it/900x350" alt="Third slide">
+              <img class="d-block img-fluid" src="{% static 'hero_L_2432x720.png' %}" alt="Third slide">
             </div>
           </div>
           <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -115,11 +116,11 @@
             <div class="card h-100">
               <a href="{{ product.get_absolute_url }}"><img class="card-img-top" src="{{product.image.url}}" alt=""></a>
               <div class="card-body">
-                <h4 class="card-title">
+                <h5 class="card-title mb-4">
                   <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
-                </h4>
-                <h5>{{ product.price }} руб</h5>
-                <a href="{% url 'add_to_cart' slug=product.slug %}" class="btn btn-danger">В корзину</a>
+                </h5>
+                <h4 class="card-price mb-4">{{ product.price }} руб</h4>
+                <a href="{% url 'add_to_cart' slug=product.slug %}" class="btn btn-danger mb-1">В корзину</a>
               </div>
             </div>
           </div>
