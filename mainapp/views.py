@@ -29,23 +29,19 @@ class ProductDetailView(CartMixin, DetailView):
     model = Product
     context_object_name = 'product'
     template_name = 'mainapp/product_detail.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['cart'] = self.cart
         return context 
 
 
-class CategoryDetailView(CartMixin, DetailView):
+class CategoryDetailView(DetailView):
 
     models = Category
     context_object_name = 'category'
     template_name = 'mainapp/category_detail.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['cart'] = self.cart
-        return context 
 
 
 class AddToCartView(CartMixin, View):
