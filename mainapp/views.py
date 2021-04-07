@@ -26,22 +26,21 @@ class HomePageView(CartMixin, View):
 
 class ProductDetailView(CartMixin, DetailView):
 
-    def get_context_data(self, **kwargs):
-     context = super().get_context_data(**kwargs)
-     context['cart'] = self.cart
-     return context 
-
+    model = Product
     context_object_name = 'product'
     template_name = 'mainapp/product_detail.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cart'] = self.cart
+        return context 
 
 
 class CategoryDetailView(CartMixin, DetailView):
 
     models = Category
-    queryset = Category.objects.all()
     context_object_name = 'category'
     template_name = 'mainapp/category_detail.html'
-    slug_url_kwarg = 'slug'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -59,6 +58,7 @@ class AddToCartView(CartMixin, View):
         )
         if created:
             self.cart.products.add(cart_product)
+        cart_product.save()
         recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, 'Товар добавлен в корзину')
         return HttpResponseRedirect('/cart/')
@@ -74,6 +74,7 @@ class DeleteFromCartView(CartMixin, View):
         )
         self.cart.products.remove(cart_product)
         cart_product.delete()
+        self.cart.save()
         recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, 'Товар удален из корзины')
         return HttpResponseRedirect('/cart/')

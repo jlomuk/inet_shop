@@ -35,7 +35,7 @@ class Customer(models.Model):
         verbose_name_plural = 'Покупатели'
 
     def __str__(self):
-        return f'Покупатель {self.user.first_name} {self.user.last_name}'
+        return f'Покупатель {self.user} {self.user.first_name} {self.user.last_name}'
 
 
 class Product(models.Model):
@@ -67,11 +67,11 @@ class CartProduct(models.Model):
     user = models.ForeignKey('Customer', verbose_name='Покупатель', on_delete=models.CASCADE)
     cart = models.ForeignKey('Cart', verbose_name='Корзина', on_delete=models.CASCADE, related_name='related_products')
     product = models.ForeignKey(Product, verbose_name='Товар', on_delete=models.CASCADE)
-    qty = models.PositiveIntegerField(default=1, verbose_name='Колличество')
+    qty = models.PositiveIntegerField(default=1, verbose_name='Кол-во')
     final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Цена итого')
 
     def __str__(self):
-        return f'Продукт: {self.content_object.title} (для корзины)'
+        return f'Продукт: {self.product.title} (для корзины)'
 
     def save(self, *args, **kwargs):
         self.final_price = self.qty * self.product.price
@@ -82,7 +82,7 @@ class Cart(models.Model):
 
     owner = models.ForeignKey(Customer, verbose_name='Владелец', on_delete=models.CASCADE)
     products = models.ManyToManyField( CartProduct, blank=True, related_name='related_cart')
-    total_products = models.PositiveIntegerField(default=0)
+    total_products = models.PositiveIntegerField(default=0, null=True, blank=True)
     final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Общая цена', default=0,)
     in_order = models.BooleanField(default=False)
     for_anonymous_user = models.BooleanField(default=False)
@@ -129,5 +129,10 @@ class Order(models.Model):
     create_at = models.DateTimeField(auto_now=True, verbose_name='Дата создания заказа')
     order_date = models.DateField(verbose_name='Дата получения заказа', default=timezone.now)
 
-def __str__(self):
-    return str(self.id)     
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
+
+    def __str__(self):
+        return f'Заказ № {self.id}_покупатель {self.customer.user}'
