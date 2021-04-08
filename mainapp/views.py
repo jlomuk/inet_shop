@@ -5,8 +5,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.views.generic import DetailView, View
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
-from .models import Category, Product ,Customer, Cart, CartProduct
+from .models import Category, Product, Customer, Cart, CartProduct, Order
 from .mixins import CartMixin
 from .forms import OrderForm, LoginForm, RegistrationForm
 from .utils import recalc_cart
@@ -112,6 +114,10 @@ class ChangeQtyView(CartMixin, View):
 
 
 class CheckoutView(CartMixin, View):
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         categories = Category.objects.all()
@@ -220,6 +226,15 @@ class RegistrationView(CartMixin, View):
                 return HttpResponseRedirect(reverse('home_page'))
         return render(request, 'mainapp/registration.html', context)
 
+
+class ProfileView(CartMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        customer = Customer.objects.get(user=request.user)
+        orders = Order.objects.filter(customer=customer).order_by('-create_at')
+        categories = Category.objects.all()
+        context = {'orders': orders, 'cart' : self.cart, 'categories': categories}
+        return render(request, 'mainapp/profile.html', context)
 
 
 

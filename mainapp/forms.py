@@ -27,7 +27,6 @@ class LoginForm(forms.ModelForm):
 		self.fields['password'].label = 'Пароль'
 
 	def clean(self):
-		print(dir(self))
 		username = self.cleaned_data['username']
 		passwd = self.cleaned_data['password']
 		if not User.objects.filter(username=username).exists():

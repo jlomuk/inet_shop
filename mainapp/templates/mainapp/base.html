@@ -53,16 +53,17 @@
         {% if not request.user.is_authenticated  %}
           <ul class="navbar-nav ml-auto">
               <li class="nav-item active">
-                  <a class="nav-link" href="{% url 'registration' %}">Регистрация</a>
+                  <a class="nav-link" href="{% url 'login' %}">Войти</a>
               </li>
               <li class="nav-item active">
-                  <a class="nav-link" href="{% url 'login' %}">Войти</a>
+                  <a class="nav-link" href="{% url 'registration' %}">Регистрация</a>
               </li>
           </ul>
         {% else %}
          <ul class="navbar-nav ml-auto">
           <li class="nav-item active">
-            <span class="nav-link badge-pill badge-warning">Привет, {{request.user.username}}</span>
+            <span class="nav-link">Привет, 
+              <a href="{% url 'profile' %}" </a>{{request.user.username}}</span>
           </li>
           <li class="nav-item active">
               <a class="nav-link" href={% url 'logout' %}>Выйти</a>
